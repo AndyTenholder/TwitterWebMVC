@@ -21,16 +21,12 @@ namespace TwitterWebMVC
         public static void Main(string[] args)
         {
             var host = BuildWebHost(args);
-
             var scope = host.Services.GetService<IServiceScopeFactory>().CreateScope();
-
             context = scope.ServiceProvider.GetRequiredService<TweetDbContext>();
-
 
             // Set up your credentials (https://apps.twitter.com)
             // Applies credentials for the current thread.If used for the first time, set up the ApplicationCredentials
             Auth.SetUserCredentials("5Za8wv3dg9cL1JpMkZ69xHiYR", "q3ieBRSIQGJOXzXjtAuSySHcFQwiKHgKCEccDSbyMYxGc5GbbT", "858816969759444992-ZOBHLzMEq4V9TV6XbYVFk9z9auNRt8v", "gEUnPo24s7dMUbvr0QyfHCbFKbWbzF8XV6F9WXtaudRYc");
-
             var user = User.GetAuthenticatedUser();
 
             // Enable Automatic RateLimit handling
@@ -101,12 +97,10 @@ namespace TwitterWebMVC
                         HashtagID = hashtag.ID
                     };
                 }
-
             };
-            stream.StartStreamMatchingAnyCondition();
+            stream.StartStreamMatchingAnyConditionAsync();
 
             host.Run();
-
 
             Hashtag GetHashtag(string hashtag)
             {
@@ -120,7 +114,6 @@ namespace TwitterWebMVC
                 return existingLangauge;
             }
         }
-
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
