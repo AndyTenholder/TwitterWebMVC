@@ -7,49 +7,97 @@
 <h1>#TBT Data</h1>
 
 <h2>There have been <strong>@Model.TotalTweets</strong> #TBT Tweets</h2>
+
+@{
+    Random rnd = new Random();
+    List<int> tweetDataList = new List<int>();
+    string TweetColor = String.Format("rgba({0},{1},{2},0.6)", rnd.Next(256), rnd.Next(256), rnd.Next(256));
+    for (int i = 0; i < Model.TweetsPerHour.Count(); i++)
+    {
+        tweetDataList.Add(Model.TweetsPerHour[i]);
+    }
+}
+
+<canvas id="TweetsPerHourChart"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
+<script>
+    var ctx = document.getElementById("TweetsPerHourChart");
+    var TweetsPerHourChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["12am", "1am", "2am", "3am", "4am", "5am",
+                "7am", "8am", "9am", "10am", "11am", "12pm",
+                "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm",
+                "8pm", "9pm", "10pm", "11pm"],
+            datasets: [{
+                label: '# of Tweets',
+                backgroundColor: "@TweetColor",
+                data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(tweetDataList)),
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }, 
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+</script>
+<br />
 <h2>in <strong>@Model.TotalLanguages</strong> different languages</h2>
+@{
+    List<string> languageNameList = new List<string>();
+    List<int> timesUsedList = new List<int>();
+    List<string> colorList = new List<string>();
+    List<int> borderList = new List<int>();
+
+    for (int i = 0; i < Model.TweetsPerHour.Count(); i++)
+    {
+        tweetDataList.Add(Model.TweetsPerHour[i]);
+    }
+
+    foreach (var langauge in Model.Languages)
+    {
+        languageNameList.Add(langauge.Name);
+        timesUsedList.Add(langauge.TimesUsed);
+        colorList.Add(String.Format("rgba({0},{1},{2},0.6)", rnd.Next(256), rnd.Next(256), rnd.Next(256)));
+        borderList.Add(0);
+    }
+}
+
+<canvas id="LanguagePieChart"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
+<script>
+    var ctx = document.getElementById("LanguagePieChart");
+    var LanguagePieChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(languageNameList)),
+            datasets: [{
+                backgroundColor: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(colorList)),
+                data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(timesUsedList)),
+                borderWidth: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(borderList))
+            }]
+        },
+        options: {
+            segmentShowStroke: false,
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+</script>
+
+<br />
 <h2>with <strong>@Model.TotalHashtags</strong> unique accompanying Hashtags</h2>
-<br />
-<h3>Tweets each hour</h3>
 <table class="table">
 
     <tr>
-        <th>Hour</th>
-        <th>Tweets</th>
-    </tr>
-
-    @for(int i = 0; i < 24; i++)
-    {
-        <tr>
-            <td>@i:00</td>
-            <td>@Model.TweetsPerHour[i]</td>
-        </tr>
-    }
-</table>
-<br />
-<h3>Language break down</h3>
-<table class="table">
-
-    <tr>
-        <th>Language</th>
-        <th>Percentage</th>
-    </tr>
-    @foreach (var langauge in Model.Languages)
-    {
-        double dec = Convert.ToDouble(langauge.TimesUsed) / Convert.ToDouble(Model.TotalTweets);
-        double percent = Math.Round(dec, 4) * 100;
-        <tr>
-            <td>@langauge.Name</td>
-            <td>@percent%</td>
-        </tr>
-    }
-</table>
-<br />
-<h3>Top 10 Hashtags</h3>
-<table class="table">
-
-    <tr>
-        <th>Hashtag</th>
+        <th>Top 10</th>
         <th>Times Used</th>
     </tr>
 
@@ -61,3 +109,5 @@
         </tr>
     }
 </table>
+
+

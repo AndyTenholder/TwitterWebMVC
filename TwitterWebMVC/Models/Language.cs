@@ -13,6 +13,5 @@ namespace TwitterWebMVC.Models
 
         public IList<Tweet> Tweets { get; set; }
 
-
     }
 }
