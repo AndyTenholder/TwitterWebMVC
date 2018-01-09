@@ -42,6 +42,7 @@ namespace TwitterWebMVC
                 if (GetLanguage(recievedTweet.Tweet.Language.ToString()) != null)
                 {
                     tweetLanguage = GetLanguage(recievedTweet.Tweet.Language.ToString());
+                    tweetLanguage.TimesUsed += 1;
                 }
                 else
                 {
@@ -71,8 +72,12 @@ namespace TwitterWebMVC
                 {
                     if (GetHashtag(hashtag.ToString()) != null)
                     {
-                        Hashtag tweetHashtag = GetHashtag(hashtag.ToString());
-                        hashtagList.Add(tweetHashtag);
+                        if (hashtag.ToString() != "#Trump")
+                        {
+                            Hashtag tweetHashtag = GetHashtag(hashtag.ToString());
+                            hashtagList.Add(tweetHashtag);
+                            tweetHashtag.TimesUsed += 1;
+                        }
                     }
                     else
                     {

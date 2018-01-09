@@ -49,7 +49,7 @@ namespace TwitterWebMVC
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=TBT}/{action=Index}/{id?}");
             });
         }
     }

@@ -1,0 +1,63 @@
+﻿@model TwitterWebMVC.ViewModels.TBTViewModel
+
+@{
+    ViewData["Title"] = "TBTHome";
+}
+
+<h1>#TBT Data</h1>
+
+<h2>There have been <strong>@Model.TotalTweets</strong> #TBT Tweets</h2>
+<h2>in <strong>@Model.TotalLanguages</strong> different languages</h2>
+<h2>with <strong>@Model.TotalHashtags</strong> unique accompanying Hashtags</h2>
+<br />
+<h3>Tweets each hour</h3>
+<table class="table">
+
+    <tr>
+        <th>Hour</th>
+        <th>Tweets</th>
+    </tr>
+
+    @for(int i = 0; i < 24; i++)
+    {
+        <tr>
+            <td>@i:00</td>
+            <td>@Model.TweetsPerHour[i]</td>
+        </tr>
+    }
+</table>
+<br />
+<h3>Language break down</h3>
+<table class="table">
+
+    <tr>
+        <th>Language</th>
+        <th>Percentage</th>
+    </tr>
+    @foreach (var langauge in Model.Languages)
+    {
+        double dec = Convert.ToDouble(langauge.TimesUsed) / Convert.ToDouble(Model.TotalTweets);
+        double percent = Math.Round(dec, 4) * 100;
+        <tr>
+            <td>@langauge.Name</td>
+            <td>@percent%</td>
+        </tr>
+    }
+</table>
+<br />
+<h3>Top 10 Hashtags</h3>
+<table class="table">
+
+    <tr>
+        <th>Hashtag</th>
+        <th>Times Used</th>
+    </tr>
+
+    @for (int i = 1; i < 11; i++)
+    {
+        <tr>
+            <td>@Model.Hashtags[i].Name</td>
+            <td>@Model.Hashtags[i].TimesUsed</td>
+        </tr>
+    }
+</table>

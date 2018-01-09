@@ -11,9 +11,10 @@ using TwitterWebMVC.Data;
 namespace TwitterWebMVC.Migrations
 {
     [DbContext(typeof(TweetDbContext))]
-    partial class TweetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180109025927_second")]
+    partial class second
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,8 +41,6 @@ namespace TwitterWebMVC.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
-
-                    b.Property<int>("TimesUsed");
 
                     b.HasKey("ID");
 

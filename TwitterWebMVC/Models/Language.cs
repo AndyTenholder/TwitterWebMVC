@@ -9,6 +9,7 @@ namespace TwitterWebMVC.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public int TimesUsed { get; set; }
 
         public IList<Tweet> Tweets { get; set; }
 
