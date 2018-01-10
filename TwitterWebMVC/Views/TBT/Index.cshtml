@@ -4,6 +4,7 @@
     ViewData["Title"] = "TBTHome";
 }
 
+@* TODO 9 Clean up navigation bar *@
 <h1>#TBT Data</h1>
 
 <h2>There have been <strong>@Model.TotalTweets</strong> #TBT Tweets</h2>
@@ -72,6 +73,7 @@
 
 <canvas id="LanguagePieChart"></canvas>
 
+@* TODO 10 Add Languages in order of occurence label*@
 <script>
     var ctx = document.getElementById("LanguagePieChart");
     var LanguagePieChart = new Chart(ctx, {
