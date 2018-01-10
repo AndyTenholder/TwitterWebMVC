@@ -7,6 +7,7 @@ namespace TwitterWebMVC.Models
 {
     public class TweetHashtag
     {
+        public int ID { get; set; }
         public int TweetID { get; set; }
         public Tweet Tweet { get; set; }
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TwitterWebMVC.Models;
 using TwitterWebMVC.Data;
@@ -51,8 +49,6 @@ namespace TwitterWebMVC.Controllers
 
             TBTViewModel tbtViewModel = new TBTViewModel(languages, hashtags, tweetsPerHour,
                 totalTweets, totalLanguages, totalHashtags);
-
-            // TODO #7 Put tweet and language data in charts
 
             return View(tbtViewModel);
         }

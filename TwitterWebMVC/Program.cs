@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Tweetinvi;
 using Microsoft.Extensions.DependencyInjection;
 using TwitterWebMVC.Data;
@@ -33,7 +28,12 @@ namespace TwitterWebMVC
             RateLimit.RateLimitTrackerMode = RateLimitTrackerMode.TrackAndAwait;
 
             var stream = Tweetinvi.Stream.CreateFilteredStream();
-            stream.AddTrack("#Trump");
+
+            /* Filter for API stream
+             * Max 400 char per track but can add multiple tracks
+             * ex stream.AddTrack("#TBT #tbt #TbT")
+             */
+            stream.AddTrack("#TBT");
             stream.MatchingTweetReceived += (sender, recievedTweet) =>
             {
                 // if language is in DB retrieve it else create new langauge object
@@ -52,7 +52,6 @@ namespace TwitterWebMVC
                     };
                     context.Languages.Add(newLanguage);
                     context.SaveChanges();
-
                     tweetLanguage = newLanguage;
                 }
 
@@ -72,13 +71,10 @@ namespace TwitterWebMVC
                 {
                     if (GetHashtag(hashtag.ToString()) != null)
                     {
-                        if (hashtag.ToString() != "#Trump")
-                        {
-                            Hashtag tweetHashtag = GetHashtag(hashtag.ToString());
-                            hashtagList.Add(tweetHashtag);
-                            tweetHashtag.TimesUsed += 1;
-                        }
-                    }
+                        Hashtag tweetHashtag = GetHashtag(hashtag.ToString());
+                        hashtagList.Add(tweetHashtag);
+                        tweetHashtag.TimesUsed += 1;
+                }
                     else
                     {
                         Hashtag newHashtag = new Hashtag
@@ -101,24 +97,33 @@ namespace TwitterWebMVC
                         Hashtag = hashtag,
                         HashtagID = hashtag.ID
                     };
-                    context.TweetHashtags.Add(tweetHashtag);
-                    context.SaveChanges();
+                    // TODO add ID property to TweetHashtag
+                    //context.TweetHashtags.Add(tweetHashtag);
+                    //context.SaveChanges();
                 }
             };
 
-            // TODO 8 Add Comments about difficult promblems
+            /* Using Async version of StartStreamMatchingAnyCondition method
+             * without Async the API stream will hold up the stack
+             * shifting it onto another thread allows host.run() to be called 
+             * and the web app to run normally
+             */
             stream.StartStreamMatchingAnyConditionAsync();
 
             host.Run();
 
+            // Checks DB for existing hashtag with same name
             Hashtag GetHashtag(string hashtag)
             {
+                // FirstorDefault returns null if nothing is found
                 Hashtag existingHashtag = context.Hashtags.FirstOrDefault(h => h.Name == hashtag);
                 return existingHashtag;
             }
 
+            // Checks DB for existing language with same name
             Language GetLanguage(string language)
             {
+                // FirstOrDefault returns null if nothing is found
                 Language existingLangauge = context.Languages.FirstOrDefault(l => l.Name == language);
                 return existingLangauge;
             }
