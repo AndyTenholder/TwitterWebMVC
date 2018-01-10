@@ -15,7 +15,11 @@ namespace TwitterWebMVC
 
         public static void Main(string[] args)
         {
+            // Wait to call .Run() on BuildWebHost until after stream is setup
+            // or stream logic will not be called
             var host = BuildWebHost(args);
+
+            // Getting scope to allow retrieval of DbContext
             var scope = host.Services.GetService<IServiceScopeFactory>().CreateScope();
             context = scope.ServiceProvider.GetRequiredService<TweetDbContext>();
 
@@ -31,14 +35,14 @@ namespace TwitterWebMVC
 
             /* Filter for API stream
              * Max 400 char per track but can add multiple tracks
-             * ex stream.AddTrack("#TBT #tbt #TbT")
+             * example: stream.AddTrack("#TBT #tbt #TbT")
              */
             stream.AddTrack("#TBT");
             stream.MatchingTweetReceived += (sender, recievedTweet) =>
             {
-                // if language is in DB retrieve it else create new langauge object
                 Language tweetLanguage;
 
+                // if language is in DB retrieve it else create new langauge object and save to DB
                 if (GetLanguage(recievedTweet.Tweet.Language.ToString()) != null)
                 {
                     tweetLanguage = GetLanguage(recievedTweet.Tweet.Language.ToString());
@@ -64,7 +68,7 @@ namespace TwitterWebMVC
                 context.Tweets.Add(newTweet);
                 context.SaveChanges();
 
-                // if hashtag is in DB retrieve it else create new hashtag object
+                // if hashtag is in DB retrieve it else create new hashtag object and save to DB
                 List<Hashtag> hashtagList = new List<Hashtag>();
 
                 foreach (var hashtag in recievedTweet.Tweet.Hashtags)
@@ -87,20 +91,22 @@ namespace TwitterWebMVC
                     }
                 }
 
+                //TODO - TweetHashtag is not connecting Tweet and Hashtag classes and ID is not auto - incrementing
+
                 // Create TweetHashtag object for each hashtag
-                foreach(var hashtag in hashtagList)
-                {
-                    TweetHashtag tweetHashtag = new TweetHashtag
-                    {
-                        Tweet = newTweet,
-                        TweetID = newTweet.ID,
-                        Hashtag = hashtag,
-                        HashtagID = hashtag.ID
-                    };
-                    // TODO add ID property to TweetHashtag
-                    //context.TweetHashtags.Add(tweetHashtag);
-                    //context.SaveChanges();
-                }
+                //foreach (var hashtag in hashtagList)
+                //{
+                //    TweetHashtag tweetHashtag = new TweetHashtag
+                //    {
+                //        Tweet = newTweet,
+                //        TweetID = newTweet.ID,
+                //        Hashtag = hashtag,
+                //        HashtagID = hashtag.ID
+                //    };
+
+                //    context.TweetHashtags.Add(tweetHashtag);
+                //    context.SaveChanges();
+                //}
             };
 
             /* Using Async version of StartStreamMatchingAnyCondition method
@@ -110,6 +116,7 @@ namespace TwitterWebMVC
              */
             stream.StartStreamMatchingAnyConditionAsync();
 
+            // host.Run() must be called after creation of stream or stream will not be set up
             host.Run();
 
             // Checks DB for existing hashtag with same name

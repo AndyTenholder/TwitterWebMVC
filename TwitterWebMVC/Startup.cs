@@ -20,6 +20,8 @@ namespace TwitterWebMVC
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+
+            // DefualtConnection string located in appsettings.json
             services.AddDbContext<TweetDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 

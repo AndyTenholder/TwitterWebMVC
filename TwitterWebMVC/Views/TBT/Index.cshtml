@@ -28,8 +28,9 @@
         tweetDataList.Add(Model.TweetsPerHour[i]);
     }
 }
+@*graphs made using the Charts.js Lib http://www.chartjs.org/*@
 <canvas id="TweetsPerHourChart"></canvas>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
 <script>
     var ctx = document.getElementById("TweetsPerHourChart");
     var TweetsPerHourChart = new Chart(ctx, {
@@ -49,11 +50,22 @@
         options: {
             scales: {
                 yAxes: [{
-                    ticks: {
-                        beginAtZero: true
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Tweets"
                     }
                 }]
             }, 
+            @*tooltips and hover cause label to appear at data point the cursor is closest to*@
+            tooltips: {
+                mode: 'index',
+                intersect: false
+            },
+            hover: {
+                mode: "nearest",
+                intersect: true
+            },
             responsive: true,
             maintainAspectRatio: true
         }
@@ -87,6 +99,7 @@
         borderList.Add(0);
     }
 }
+@*graphs made using the Charts.js Lib http://www.chartjs.org/*@
 <canvas id="LanguagePieChart"></canvas>
 <script>
     var ctx = document.getElementById("LanguagePieChart");
