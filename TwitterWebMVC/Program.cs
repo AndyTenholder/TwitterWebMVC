@@ -101,8 +101,12 @@ namespace TwitterWebMVC
                         Hashtag = hashtag,
                         HashtagID = hashtag.ID
                     };
+                    context.TweetHashtags.Add(tweetHashtag);
+                    context.SaveChanges();
                 }
             };
+
+            // TODO 8 Add Comments about difficult promblems
             stream.StartStreamMatchingAnyConditionAsync();
 
             host.Run();
