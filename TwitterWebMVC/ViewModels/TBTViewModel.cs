@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TwitterWebMVC.ViewModels
 {
@@ -11,9 +12,10 @@ namespace TwitterWebMVC.ViewModels
         public int TotalTweets { get; set; }
         public int TotalLanguages { get; set; }
         public int TotalHashtags { get; set; }
+        public TimeSpan ServerUpTime { get; set; }
 
         public TBTViewModel(IList<Models.Language> languages, IList<Models.Hashtag> hashtags, int[] tweetsPerHour,
-             int totalTweets, int totalLanguages, int totalHashtags)
+             int totalTweets, int totalLanguages, int totalHashtags, TimeSpan serverUpTime)
         {
             Languages = languages;
             Hashtags = hashtags;
@@ -21,6 +23,7 @@ namespace TwitterWebMVC.ViewModels
             TotalTweets = totalTweets;
             TotalLanguages = totalLanguages;
             TotalHashtags = totalHashtags;
+            ServerUpTime = serverUpTime;
         }
     }
 }

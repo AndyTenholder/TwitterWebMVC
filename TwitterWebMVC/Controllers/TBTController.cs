@@ -5,6 +5,7 @@ using TwitterWebMVC.Models;
 using TwitterWebMVC.Data;
 using TwitterWebMVC.ViewModels;
 using TwitterWebMVC.Comparers;
+using System;
 
 namespace TwitterWebMVC.Controllers
 {
@@ -22,6 +23,10 @@ namespace TwitterWebMVC.Controllers
             // Get Total Number of #TBT tweets
             List<Tweet> tweets = context.Tweets.ToList();
             int totalTweets = tweets.Count;
+
+            // Get difference between time first tweet was made and current time
+            Tweet firstTweet = context.Tweets.First(t => t.ID == 1);
+            TimeSpan serverUpTime = DateTime.Now - firstTweet.DateTime;
 
             // Get total number of languages
             List<Language> languages = context.Languages.ToList();
@@ -48,7 +53,7 @@ namespace TwitterWebMVC.Controllers
             }
 
             TBTViewModel tbtViewModel = new TBTViewModel(languages, hashtags, tweetsPerHour,
-                totalTweets, totalLanguages, totalHashtags);
+                totalTweets, totalLanguages, totalHashtags, serverUpTime);
 
             return View(tbtViewModel);
         }
